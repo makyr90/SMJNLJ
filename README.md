@@ -4,7 +4,7 @@ Program accepts the following command line arguments:
 
 * **-f1** <file1 path>: full path to file1
 * **-a1** <file1_join_attribute>: the column to use as join attribute from file1 (counting from 0)
-* **-f2** <file2 path>: same as above for file2 fff
+* **-f2** <file2 path>: same as above for file2
 * **-a2** <file2_join_attribute>: same as above for file2
 * **-j** <join_algorithm_to_use>: SMJ or NLJ
 * **-m** <available_memory_size>: we use as memory metric the number of records*
