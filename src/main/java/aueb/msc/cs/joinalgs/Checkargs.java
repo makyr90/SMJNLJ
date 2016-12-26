@@ -5,13 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-
-
 public class Checkargs {
 
 	public static void checklength(String[] arguments) {
 		if (arguments.length != 16) {
-			System.out.println("Program requires exactly 8 input arguments but " + arguments.length + " are given");
+			System.out.println("Program requires exactly 16 input arguments but " + arguments.length + " are given");
 			System.exit(0);
 
 		}
@@ -42,7 +40,7 @@ public class Checkargs {
 	public static int checkcolumn(String file, int column) {
 		String line = "";
 		String cvsSplitBy = ",";
-		int totalrecords = 0 ;
+		int totalrecords = 0;
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			line = br.readLine();
 			String[] values = line.split(cvsSplitBy);
@@ -50,16 +48,16 @@ public class Checkargs {
 			line = br.readLine();
 			String[] values2 = line.split(cvsSplitBy);
 			if ((values2.length < column) || (column < 0)) {
-				System.out.println("The selected column number for file "+file+" is out of the correct range [0,"+values2.length+"]");
+				System.out.println("The selected column number for file " + file + " is out of the correct range [0,"
+						+ values2.length + "]");
 				System.exit(0);
 			}
-			
-				
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return totalrecords;
 
 	}
