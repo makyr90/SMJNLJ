@@ -12,6 +12,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import aueb.msc.cs.utils.ArrayListCompare;
 import aueb.msc.cs.utils.CSVWriter;
 import aueb.msc.cs.utils.Checkargs;
+import aueb.msc.cs.utils.JoinHeader;
 import aueb.msc.cs.utils.ReadCSV;
 import aueb.msc.cs.utils.WriteTuples;
 
@@ -140,12 +141,12 @@ public class Join {
 				if (tupler1[this.col1].equals(tupler2[this.col2])) {
 
 					String[] rel1 = new String[tupler1.length];
-					System.arraycopy(tupler1, 0, rel1, 0,tupler1.length);
+					System.arraycopy(tupler1, 0, rel1, 0, tupler1.length);
 					String[] rel2 = new String[tupler2.length];
-					System.arraycopy(tupler2, 0, rel2, 0,tupler2.length);
-					
+					System.arraycopy(tupler2, 0, rel2, 0, tupler2.length);
+
 					rel2 = ArrayUtils.removeElement(rel2, rel2[this.col2]);
-					
+
 					String swap = rel1[0];
 					rel1[0] = rel1[this.col1];
 					rel1[this.col1] = swap;
@@ -158,6 +159,9 @@ public class Join {
 		}
 
 		FileWriter writer = new FileWriter(this.output);
+		CSVWriter.writeLine(writer, JoinHeader.makeHeaderRow(this.file1, this.file2,r1.get(0).length,
+				r2.get(0).length,this.col1, this.col2, false) );
+		writer.flush();
 		for (List<String> joinedtuple : results) {
 			CSVWriter.writeLine(writer, joinedtuple);
 		}
@@ -167,7 +171,7 @@ public class Join {
 	}
 
 	public void singlePassSMJ() throws IOException {
-		
+
 		ArrayList<String[]> r1 = ReadCSV.readfile(this.file1);
 		ArrayList<String[]> r2 = ReadCSV.readfile(this.file2);
 		ArrayListCompare.sort(r1, this.col1);
@@ -175,6 +179,9 @@ public class Join {
 		int iindex = 0, jindex = 0;
 		int[] indexes;
 		FileWriter writer = new FileWriter(this.output);
+		CSVWriter.writeLine(writer, JoinHeader.makeHeaderRow(this.file1, this.file2,r1.get(0).length,
+				r2.get(0).length,this.col1, this.col2, false) );
+		writer.flush();
 		while ((iindex < r1.size()) && (jindex < r2.size())) {
 			if ((Integer.parseInt(r1.get(iindex)[col1])) == (Integer.parseInt(r2.get(jindex)[col2]))) {
 				indexes = WriteTuples.outputTuples(writer, r1, r2, iindex, jindex, this.col1, this.col2);
@@ -182,12 +189,16 @@ public class Join {
 				iindex = indexes[0];
 				jindex = indexes[1];
 
-			} else if ((Integer.parseInt(r1.get(iindex)[col1])) < (Integer.parseInt(r2.get(jindex)[col2]))){
+			} else if ((Integer.parseInt(r1.get(iindex)[col1])) < (Integer.parseInt(r2.get(jindex)[col2]))) {
 				iindex++;
-			}else {
+			} else {
 				jindex++;
-		}
+			}
 		}
 		writer.close();
+	}
 
-	}}
+	public void rockingNLJ() {
+		
+	}
+}

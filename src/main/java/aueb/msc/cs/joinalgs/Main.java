@@ -8,9 +8,11 @@ public class Main {
 		
 		Checkargs.checklength(args);
 		Join join = new Join(args);
-		if (join.getFile1size() + join.getFile2size() <= join.getMsize()) {
+		if (join.getFile1size() + join.getFile2size() <= join.getMsize()) 
 			join.singlePass();
-		}
+			
+		else if (join.getJoinmethod().equals("NLJ"))
+			join.rockingNLJ();
 
 	}
 

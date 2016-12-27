@@ -22,6 +22,8 @@ public class Checkargs {
 			System.exit(0);
 		}
 	}
+	
+	
 
 	public static void checkjoinalgorithm(String joinmeth) {
 		if (!(joinmeth.equals("NLJ") || joinmeth.equals("SMJ"))) {
@@ -56,6 +58,9 @@ public class Checkargs {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (NullPointerException ne) {
+			System.out.println("The selected file: "+file+" has no records");
+			System.exit(0);
 		}
 
 		return totalrecords;
