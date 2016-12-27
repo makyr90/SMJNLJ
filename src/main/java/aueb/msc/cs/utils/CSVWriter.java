@@ -1,4 +1,4 @@
-package aueb.msc.cs.joinalgs;
+package aueb.msc.cs.utils;
 
 import java.io.IOException;
 import java.io.Writer;

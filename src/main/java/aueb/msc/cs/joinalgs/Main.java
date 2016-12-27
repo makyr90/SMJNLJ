@@ -1,5 +1,7 @@
 package aueb.msc.cs.joinalgs;
 
+import aueb.msc.cs.utils.Checkargs;
+
 public class Main {
 
 	public static void main(String[] args) {
