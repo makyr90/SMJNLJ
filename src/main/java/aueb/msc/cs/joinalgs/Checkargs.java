@@ -47,9 +47,9 @@ public class Checkargs {
 			totalrecords = Integer.parseInt(values[0]);
 			line = br.readLine();
 			String[] values2 = line.split(cvsSplitBy);
-			if ((values2.length < column) || (column < 0)) {
+			if (((values2.length -1) < column) || (column < 0)) {
 				System.out.println("The selected column number for file " + file + " is out of the correct range [0,"
-						+ values2.length + "]");
+						+ (values2.length - 1) + "]");
 				System.exit(0);
 			}
 
