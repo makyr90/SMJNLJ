@@ -7,12 +7,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.commons.lang3.ArrayUtils;
 
+import aueb.msc.cs.utils.ArrayListCompare;
 import aueb.msc.cs.utils.CSVWriter;
 import aueb.msc.cs.utils.Checkargs;
 import aueb.msc.cs.utils.ReadCSV;
+import aueb.msc.cs.utils.WriteTuples;
 
 public class Join {
 
@@ -114,15 +115,18 @@ public class Join {
 	}
 
 	public void singlePass() {
-		if (this.joinmethod.equals("NLJ")) {
-			try {
+
+		try {
+			if (this.joinmethod.equals("NLJ")) {
 				this.singlePassNLJ();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else
-			this.singlePassSMJ();
+			} else
+				this.singlePassSMJ();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	public void singlePassNLJ() throws IOException {
@@ -135,9 +139,17 @@ public class Join {
 			for (String[] tupler2 : r2) {
 				if (tupler1[this.col1].equals(tupler2[this.col2])) {
 
-					tupler2 = ArrayUtils.removeElement(tupler2, tupler2[this.col2]);
-
-					List<String> joinattr = Arrays.asList(ArrayUtils.addAll(tupler1, tupler2));
+					String[] rel1 = new String[tupler1.length];
+					System.arraycopy(tupler1, 0, rel1, 0,tupler1.length);
+					String[] rel2 = new String[tupler2.length];
+					System.arraycopy(tupler2, 0, rel2, 0,tupler2.length);
+					
+					rel2 = ArrayUtils.removeElement(rel2, rel2[this.col2]);
+					
+					String swap = rel1[0];
+					rel1[0] = rel1[this.col1];
+					rel1[this.col1] = swap;
+					List<String> joinattr = Arrays.asList(ArrayUtils.addAll(rel1, rel2));
 					results.add(joinattr);
 
 				}
@@ -154,7 +166,28 @@ public class Join {
 
 	}
 
-	public void singlePassSMJ() {
+	public void singlePassSMJ() throws IOException {
+		
+		ArrayList<String[]> r1 = ReadCSV.readfile(this.file1);
+		ArrayList<String[]> r2 = ReadCSV.readfile(this.file2);
+		ArrayListCompare.sort(r1, this.col1);
+		ArrayListCompare.sort(r2, this.col2);
+		int iindex = 0, jindex = 0;
+		int[] indexes;
+		FileWriter writer = new FileWriter(this.output);
+		while ((iindex < r1.size()) && (jindex < r2.size())) {
+			if ((Integer.parseInt(r1.get(iindex)[col1])) == (Integer.parseInt(r2.get(jindex)[col2]))) {
+				indexes = WriteTuples.outputTuples(writer, r1, r2, iindex, jindex, this.col1, this.col2);
+				writer.flush();
+				iindex = indexes[0];
+				jindex = indexes[1];
 
-	}
-}
+			} else if ((Integer.parseInt(r1.get(iindex)[col1])) < (Integer.parseInt(r2.get(jindex)[col2]))){
+				iindex++;
+			}else {
+				jindex++;
+		}
+		}
+		writer.close();
+
+	}}
