@@ -1,25 +1,30 @@
 package aueb.msc.cs.joinalgs;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.apache.commons.lang3.ArrayUtils;
+
+import org.apache.commons.io.input.ReversedLinesFileReader;
 
 import aueb.msc.cs.utils.ArrayListCompare;
 import aueb.msc.cs.utils.CSVWriter;
 import aueb.msc.cs.utils.Checkargs;
 import aueb.msc.cs.utils.JoinHeader;
 import aueb.msc.cs.utils.ReadCSV;
+import aueb.msc.cs.utils.RelationsJoin;
 import aueb.msc.cs.utils.WriteTuples;
 
 public class Join {
 
 	private String file1, file2, joinmethod, temp, output;
 	private int col1, col2, msize, file1size, file2size;
+	private ArrayList<String[]> NLJrockingCache = null;
 
 	public Join(String[] arguments) {
 		for (int i = 0; i < arguments.length; i = i + 2) {
@@ -115,6 +120,14 @@ public class Join {
 		return file2size;
 	}
 
+	public ArrayList<String[]> getNLJrockingCache() {
+		return NLJrockingCache;
+	}
+
+	public void setNLJrockingCache(ArrayList<String[]> nLJrockingCache) {
+		NLJrockingCache = nLJrockingCache;
+	}
+
 	public void singlePass() {
 
 		try {
@@ -132,39 +145,13 @@ public class Join {
 
 	public void singlePassNLJ() throws IOException {
 
-		ArrayList<String[]> r1 = ReadCSV.readfile(this.file1);
-		ArrayList<String[]> r2 = ReadCSV.readfile(this.file2);
-
-		ArrayList<List<String>> results = new ArrayList<>();
-		for (String[] tupler1 : r1) {
-			for (String[] tupler2 : r2) {
-				if (tupler1[this.col1].equals(tupler2[this.col2])) {
-
-					String[] rel1 = new String[tupler1.length];
-					System.arraycopy(tupler1, 0, rel1, 0, tupler1.length);
-					String[] rel2 = new String[tupler2.length];
-					System.arraycopy(tupler2, 0, rel2, 0, tupler2.length);
-
-					rel2 = ArrayUtils.removeElement(rel2, rel2[this.col2]);
-
-					String swap = rel1[0];
-					rel1[0] = rel1[this.col1];
-					rel1[this.col1] = swap;
-					List<String> joinattr = Arrays.asList(ArrayUtils.addAll(rel1, rel2));
-					results.add(joinattr);
-
-				}
-
-			}
-		}
-
+		ArrayList<String[]> r1 = ReadCSV.readFile(this.file1);
+		ArrayList<String[]> r2 = ReadCSV.readFile(this.file2);
 		FileWriter writer = new FileWriter(this.output);
-		CSVWriter.writeLine(writer, JoinHeader.makeHeaderRow(this.file1, this.file2,r1.get(0).length,
-				r2.get(0).length,this.col1, this.col2, false) );
+		CSVWriter.writeLine(writer, JoinHeader.makeHeaderRow(this.file1, this.file2, r1.get(0).length, r2.get(0).length,
+				this.col1, this.col2));
 		writer.flush();
-		for (List<String> joinedtuple : results) {
-			CSVWriter.writeLine(writer, joinedtuple);
-		}
+		RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
 		writer.flush();
 		writer.close();
 
@@ -172,15 +159,15 @@ public class Join {
 
 	public void singlePassSMJ() throws IOException {
 
-		ArrayList<String[]> r1 = ReadCSV.readfile(this.file1);
-		ArrayList<String[]> r2 = ReadCSV.readfile(this.file2);
+		ArrayList<String[]> r1 = ReadCSV.readFile(this.file1);
+		ArrayList<String[]> r2 = ReadCSV.readFile(this.file2);
 		ArrayListCompare.sort(r1, this.col1);
 		ArrayListCompare.sort(r2, this.col2);
 		int iindex = 0, jindex = 0;
 		int[] indexes;
 		FileWriter writer = new FileWriter(this.output);
-		CSVWriter.writeLine(writer, JoinHeader.makeHeaderRow(this.file1, this.file2,r1.get(0).length,
-				r2.get(0).length,this.col1, this.col2, false) );
+		CSVWriter.writeLine(writer, JoinHeader.makeHeaderRow(this.file1, this.file2, r1.get(0).length, r2.get(0).length,
+				this.col1, this.col2));
 		writer.flush();
 		while ((iindex < r1.size()) && (jindex < r2.size())) {
 			if ((Integer.parseInt(r1.get(iindex)[col1])) == (Integer.parseInt(r2.get(jindex)[col2]))) {
@@ -198,7 +185,124 @@ public class Join {
 		writer.close();
 	}
 
-	public void rockingNLJ() {
-		
+	public void rockingNLJ() throws IOException, FileNotFoundException {
+
+		FileWriter writer = new FileWriter(this.output);
+		if (this.file2size < this.file1size) { // reverse join relation
+			String swapfile = this.file1;
+			this.file1 = this.file2;
+			this.file2 = swapfile;
+			int swapcol = this.col1;
+			this.col1 = this.col2;
+			this.col2 = swapcol;
+			int swapfilesize = this.file1size;
+			this.file1size = this.file2size;
+			this.file2size = swapfilesize;
+		}
+
+		BufferedReader file1br = new BufferedReader(new FileReader(this.file1));
+
+		file1br.readLine(); // Skip 1st line
+		ArrayList<String[]> r1 = new ArrayList<>();
+		Object br2 = null;
+		boolean reverse = false;
+		boolean headerRow = true;
+		while (((r1 = ReadCSV.readFileChunk(file1br, this.msize - 1))) != null) {
+			
+			if (headerRow) {
+				
+				BufferedReader brheder = new BufferedReader(new FileReader(this.file2));
+				ArrayList<String[]> r2header = ReadCSV.readFileChunk(brheder, 2);
+				CSVWriter.writeLine(writer, JoinHeader.makeHeaderRow(this.file1, this.file2, r1.get(0).length,
+						r2header.get(1).length, this.col1, this.col2));
+				headerRow = false;
+			}
+			
+			br2 = this.NLJjoinChunks(br2, writer, r1, reverse);
+			writer.flush();
+			reverse = !reverse;
+
+		}
+
+		writer.close();
+		file1br.close();
+	}
+
+	public Object NLJjoinChunks(Object br, FileWriter writer, ArrayList<String[]> r1, boolean reverse)
+			throws FileNotFoundException, IOException {
+
+		ArrayList<String[]> r2 = new ArrayList<>();
+
+		if (br == null) {
+			try(BufferedReader br2 = new BufferedReader(new FileReader(this.file2))){
+			br2.readLine(); // Skip 1st line
+			for (int i = 0; i < (this.file2size - 1); i++) {
+				r2 = ReadCSV.readFileChunk(br2, 1);
+				RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
+				writer.flush();
+			}
+			}
+			ReversedLinesFileReader rbr = new ReversedLinesFileReader(new File(this.file2), Charset.defaultCharset());
+			r2 = ReadCSV.readFileChunkReverse(rbr, 1);
+			setNLJrockingCache(r2);
+			RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
+			writer.flush();
+
+			return (Object) rbr;
+
+		} else if ((br != null) & ((r1.size()) == (this.msize - 1)) & (reverse)) {
+			RelationsJoin.writejoin(r1, this.NLJrockingCache, this.col1, this.col2, writer);
+			this.NLJrockingCache.clear();
+			for (int i = 0; i < (this.file2size - 1); i++) {
+				r2 = ReadCSV.readFileChunkReverse((ReversedLinesFileReader) br, 1);
+				RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
+				writer.flush();
+			}
+			BufferedReader br2 = new BufferedReader(new FileReader(this.file2));
+			br2.readLine(); // Skip 1st line
+			r2 = ReadCSV.readFileChunk(br2, 1);
+			setNLJrockingCache(r2);
+			RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
+			writer.flush();
+
+			return (Object) br2;
+
+		} else if ((br != null) & ((r1.size()) == (this.msize - 1)) & (!reverse)) {
+			RelationsJoin.writejoin(r1, this.NLJrockingCache, this.col1, this.col2, writer);
+			this.NLJrockingCache.clear();
+			for (int i = 0; i < (this.file2size - 1); i++) {
+				r2 = ReadCSV.readFileChunk((BufferedReader) br, 1);
+				RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
+				writer.flush();
+			}
+			ReversedLinesFileReader rbr = new ReversedLinesFileReader(new File(this.file2), Charset.defaultCharset());
+			r2 = ReadCSV.readFileChunkReverse(rbr, 1);
+			setNLJrockingCache(r2);
+			RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
+			writer.flush();
+
+			return (Object) rbr;
+
+		} else {
+			RelationsJoin.writejoin(r1, this.NLJrockingCache, this.col1, this.col2, writer);
+			this.NLJrockingCache.clear();
+			if (br instanceof BufferedReader) {
+				for (int i = 0; i < (this.file2size - 1); i++) {
+					r2 = ReadCSV.readFileChunk((BufferedReader) br, 1);
+					RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
+					writer.flush();
+				}
+
+			} else {
+				for (int i = 0; i < (this.file2size - 1); i++) {
+					r2 = ReadCSV.readFileChunkReverse((ReversedLinesFileReader) br, 1);
+					RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
+					writer.flush();
+				}
+
+			}
+			return null;
+		}
+
 	}
 }
