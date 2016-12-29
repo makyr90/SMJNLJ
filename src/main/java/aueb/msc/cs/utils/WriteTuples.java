@@ -3,10 +3,6 @@ package aueb.msc.cs.utils;
 
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 public class WriteTuples {
 	
@@ -23,18 +19,7 @@ public class WriteTuples {
 			
 			while((jjindex < r2.size())&&(Integer.parseInt(r1.get(iindex)[col1])) == (Integer.parseInt(r2.get(jjindex)[col2]))) {
 				
-				String[] rel1 = new String[r1.get(iindex).length];
-				System.arraycopy(r1.get(iindex), 0, rel1, 0, r1.get(iindex).length);
-				String[] rel2 = new String[r2.get(jjindex).length];
-				System.arraycopy(r2.get(jjindex), 0, rel2, 0, r2.get(jjindex).length);
-				
-				rel2 = ArrayUtils.removeElement(rel2, rel2[col2]);
-				
-				String swap = rel1[0];
-				rel1[0] = rel1[col1];
-				rel1[col1] = swap;
-				List<String> joinattr = Arrays.asList(ArrayUtils.addAll(rel1, rel2));
-				CSVWriter.writeLine(writer, joinattr);
+				RelationsJoin.writejoin(r1.get(iindex), r2.get(jjindex), col1, col2, writer);
 				jjindex++;
 			}
 			iindex++;
