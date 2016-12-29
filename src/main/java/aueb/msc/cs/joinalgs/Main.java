@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import aueb.msc.cs.utils.Checkargs;
+import aueb.msc.cs.utils.ReadCSV;
 
 public class Main {
 
@@ -24,6 +25,8 @@ public class Main {
 			}
 
 		}
-
+		ArrayList<String[]> res = new ArrayList<>();
+		res = ReadCSV.readFile(join.getOutput());
+		System.out.println("Join size: "+ res.size());
 	}
 }

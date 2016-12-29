@@ -10,6 +10,7 @@ import org.apache.commons.io.input.ReversedLinesFileReader;
 public class ReadCSV {
 
 	public static ArrayList<String[]> readFile(String file) {
+
 		String line = "";
 		String cvsSplitBy = ",";
 		ArrayList<String[]> relation = new ArrayList<>();
@@ -26,34 +27,46 @@ public class ReadCSV {
 		return relation;
 	}
 
-	public static ArrayList<String[]> readFileChunk(BufferedReader file1br, int chunksize) throws IOException {
+	public static ArrayList<String[]> readFileChunk(BufferedReader filebr, int chunksize) throws IOException {
+
 		String line = "";
 		String cvsSplitBy = ",";
 		ArrayList<String[]> relation = new ArrayList<>();
 
-		for(int i=0; i< chunksize;i++) {
-			line = file1br.readLine();
+		for (int i = 0; i < chunksize; i++) {
+			line = filebr.readLine();
 			if (line != null)
 				relation.add(line.split(cvsSplitBy));
+			else
+				break;
 
 		}
+
 		if (relation.size() == 0)
 			return null;
 		else
-		return relation;
+			return relation;
 	}
-	
-	public static ArrayList<String[]> readFileChunkReverse(ReversedLinesFileReader rbr, int chunksize) throws IOException {
+
+	public static ArrayList<String[]> readFileChunkReverse(ReversedLinesFileReader reversefilebr, int chunksize)
+			throws IOException {
+
 		String line = "";
 		String cvsSplitBy = ",";
 		ArrayList<String[]> relation = new ArrayList<>();
 
-		for(int i=0; i< chunksize;i++) {
-			line = rbr.readLine();
-			relation.add(line.split(cvsSplitBy));
+		for (int i = 0; i < chunksize; i++) {
+			line = reversefilebr.readLine();
+			if (line != null)
+				relation.add(line.split(cvsSplitBy));
+			else
+				break;
 
 		}
 
-		return relation;
+		if (relation.size() == 0)
+			return null;
+		else
+			return relation;
 	}
 }

@@ -227,7 +227,7 @@ public class Join {
 
 		writer.close();
 		file1br.close();
-		
+
 	}
 
 	public Object NLJjoinChunks(Object br, FileWriter writer, ArrayList<String[]> r1, boolean reverse)
@@ -235,17 +235,43 @@ public class Join {
 
 		ArrayList<String[]> r2 = new ArrayList<>();
 
-		if (br == null) {
+		if ((br == null) & ((r1.size()) < (this.msize - 1))) {                    //Smaller relation can fit in  memory 
+			int availiablebuffers = (this.msize - r1.size());
+			try (BufferedReader br2 = new BufferedReader(new FileReader(this.file2))) {
+				br2.readLine(); // Skip 1st line
+			int rounds = (int)Math.ceil(((this.file2size) / availiablebuffers));
+			for (int i = 0; i < rounds; i ++) {
+				r2 = ReadCSV.readFileChunk(br2, availiablebuffers);
+				RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
+				writer.flush();
+			}
+			br2.close();
+			}
+			return null;
+
+		} else if ((br == null) & (this.file1size == (this.msize - 1))) {                  //Smaller relation  fits exactly in  memory 
+			try (BufferedReader br2 = new BufferedReader(new FileReader(this.file2))) {
+				br2.readLine(); // Skip 1st line
+			for (int i = 0; i < (this.file2size); i++) {
+				r2 = ReadCSV.readFileChunk(br2, 1);
+				RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
+				writer.flush();
+			}
+			br2.close();
+			}
+			return null;
+		
+		} else if (br == null) {
 			try (BufferedReader br2 = new BufferedReader(new FileReader(this.file2))) {
 				br2.readLine(); // Skip 1st line
 				for (int i = 0; i < (this.file2size - 1); i++) {
 					r2 = ReadCSV.readFileChunk(br2, 1);
 					RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
 					writer.flush();
-					
+
 				}
 				br2.close();
-			}
+				}
 			ReversedLinesFileReader rbr = new ReversedLinesFileReader(new File(this.file2), Charset.defaultCharset());
 			r2 = ReadCSV.readFileChunkReverse(rbr, 1);
 			setNLJrockingCache(r2);
@@ -257,7 +283,7 @@ public class Join {
 		} else if ((br != null) & ((r1.size()) == (this.msize - 1)) & (reverse)) {
 			RelationsJoin.writejoin(r1, this.NLJrockingCache, this.col1, this.col2, writer);
 			this.NLJrockingCache.clear();
-			for (int i = 0; i < (this.file2size - 1); i++) {
+			for (int i = 0; i < (this.file2size - 2); i++) {
 				r2 = ReadCSV.readFileChunkReverse((ReversedLinesFileReader) br, 1);
 				RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
 				writer.flush();
@@ -292,19 +318,23 @@ public class Join {
 		} else {
 			RelationsJoin.writejoin(r1, this.NLJrockingCache, this.col1, this.col2, writer);
 			this.NLJrockingCache.clear();
+			int availiablebuffers = (this.msize - r1.size());
 			if (br instanceof BufferedReader) {
-				for (int i = 0; i < (this.file2size - 1); i++) {
-					r2 = ReadCSV.readFileChunk((BufferedReader) br, 1);
+				int rounds = (int)Math.ceil(((this.file2size - 1) / availiablebuffers));
+				for (int i = 0; i < rounds; i++) {
+					r2 = ReadCSV.readFileChunk((BufferedReader) br, availiablebuffers);
 					RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
 					writer.flush();
 				}
 				((BufferedReader) br).close();
-				
+
 			} else {
-				for (int i = 0; i < (this.file2size - 1); i++) {
-					r2 = ReadCSV.readFileChunkReverse((ReversedLinesFileReader) br, 1);
+				int rounds = (int)Math.ceil(((this.file2size - 2) / availiablebuffers));
+				for (int i = 0; i < rounds; i++) {
+					r2 = ReadCSV.readFileChunkReverse((ReversedLinesFileReader) br, availiablebuffers);
 					RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer);
 					writer.flush();
+					
 				}
 				((ReversedLinesFileReader) br).close();
 			}
