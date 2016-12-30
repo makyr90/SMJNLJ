@@ -18,6 +18,7 @@ import aueb.msc.cs.utils.Checkargs;
 import aueb.msc.cs.utils.JoinHeader;
 import aueb.msc.cs.utils.ReadCSV;
 import aueb.msc.cs.utils.RelationsJoin;
+import aueb.msc.cs.utils.SMJSort;
 import aueb.msc.cs.utils.WriteTuples;
 
 public class Join {
@@ -348,5 +349,9 @@ public class Join {
 			return null;
 		}
 
+	}
+	public void multipassSMJ(){
+		SMJSort.sortRelation(this.file1, this.msize, this.col1, this.temp);
+		SMJSort.sortRelation(this.file2, this.msize, this.col2, this.temp);
 	}
 }

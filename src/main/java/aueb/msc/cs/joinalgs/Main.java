@@ -23,7 +23,8 @@ public class Main {
 				e.printStackTrace();
 			}
 
-		}
-			
+		} else
+			join.multipassSMJ();
+
 	}
 }

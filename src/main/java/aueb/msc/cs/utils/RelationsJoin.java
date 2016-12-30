@@ -20,7 +20,6 @@ public class RelationsJoin {
 				if (tupler1[col1].equals(tupler2[col2])) {
 
 					String[] rel1 = new String[tupler1.length];
-					// System.arraycopy(tupler1, 0, rel1, 0, tupler1.length);
 					String[] rel2 = new String[tupler2.length];
 					System.arraycopy(tupler2, 0, rel2, 0, tupler2.length);
 
