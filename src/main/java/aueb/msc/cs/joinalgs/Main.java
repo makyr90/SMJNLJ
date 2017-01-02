@@ -33,7 +33,7 @@ public class Main {
 			}
 		// Test output
 		ArrayList<String[]> results = ReadCSV.readFile(join.getOutput());
-		System.out.println("Joins: " + results.size() + 1);
+		System.out.println("Joins: " + results.size());
 
 	}
 }

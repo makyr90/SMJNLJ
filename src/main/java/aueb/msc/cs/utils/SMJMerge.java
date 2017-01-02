@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 
 public class SMJMerge {
 
@@ -26,7 +27,6 @@ public class SMJMerge {
 			String[] tuple2 = ReadCSV.readtuple(line2);
 
 			if ((Integer.parseInt(tuple1[col1])) == (Integer.parseInt(tuple2[col2]))) {
-				br2.mark(file2size * tuple2.length);
 				outputTuples(writer, tuple1, tuple2, col1, col2);
 
 			} else if ((Integer.parseInt(tuple1[col1])) < (Integer.parseInt(tuple2[col2]))) {
@@ -46,14 +46,26 @@ public class SMJMerge {
 	public static void outputTuples(Writer writer, String[] tuple1, String[] tuple2, int col1, int col2)
 			throws IOException {
 
-		while ((Integer.parseInt(tuple1[col1])) == (Integer.parseInt(tuple2[col2])) & (line1 != null)) {
-			br2.reset();
-			String[] tuple2clone = tuple2;
-			while ((Integer.parseInt(tuple1[col1])) == (Integer.parseInt(tuple2clone[col2])) & (line2 != null)) {
+		boolean firstpass = true;
+		ArrayList<String[]> joinedtuples = new ArrayList<>();
+		String[] tuple2clone = tuple2;
+		while ((Integer.parseInt(tuple1[col1])) == (Integer.parseInt(tuple2clone[col2])) & (line1 != null)) {
+			if (firstpass) {
+				firstpass = false;
+			} else {
+				RelationsJoin.writejoin(tuple1, joinedtuples, col1, col2, writer);
+				line1 = br1.readLine();
+				if (line1 != null) {
+					tuple1 = ReadCSV.readtuple(line1);
+				}
+				continue;
+			}
+			while ((Integer.parseInt(tuple1[col1])) == (Integer.parseInt(tuple2[col2])) & (line2 != null)) {
 				RelationsJoin.writejoin(tuple1, tuple2, col1, col2, writer);
+				joinedtuples.add(tuple2);
 				line2 = br2.readLine();
 				if (line2 != null)
-					tuple2clone = ReadCSV.readtuple(line2);
+					tuple2 = ReadCSV.readtuple(line2);
 
 			}
 
