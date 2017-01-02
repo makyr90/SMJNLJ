@@ -16,7 +16,7 @@ public class SMJSort {
 
 	private static int totalsublists = 0;
 
-	public static void sortRelation(String file, int msize, int col, String temp) {
+	public static File sortRelation(String file, int msize, int col, String temp) {
 
 		int sublistindex = 0;
 		File filename1 = new File(file);
@@ -51,6 +51,7 @@ public class SMJSort {
 			File oldfile =new File(temp + File.separator + nameprefix + totalsublists + ".csv");
 			File newfile =new File(temp + File.separatorChar +fileName1 + "_Sorted" + ".csv");
 			oldfile.renameTo(newfile);
+			return newfile;
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -59,6 +60,7 @@ public class SMJSort {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 
 	}
 

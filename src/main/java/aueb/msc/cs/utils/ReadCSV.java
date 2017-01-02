@@ -69,4 +69,14 @@ public class ReadCSV {
 		else
 			return relation;
 	}
+
+	public static String[] readtuple(String line) throws IOException {
+
+		String cvsSplitBy = ",";
+		if (line!= null)
+			return line.split(cvsSplitBy);
+		else
+			return null;
+
+	}
 }

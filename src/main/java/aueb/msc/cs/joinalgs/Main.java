@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import aueb.msc.cs.utils.Checkargs;
+import aueb.msc.cs.utils.ReadCSV;
 
 public class Main {
 
@@ -24,7 +25,15 @@ public class Main {
 			}
 
 		} else
-			join.multipassSMJ();
+			try {
+				join.multipassSMJ();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		// Test output
+		ArrayList<String[]> results = ReadCSV.readFile(join.getOutput());
+		System.out.println("Joins: " + results.size() + 1);
 
 	}
 }
