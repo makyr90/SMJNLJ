@@ -16,7 +16,7 @@ public class SMJSort {
 
 	private static int totalsublists = 0;
 
-	public static File sortRelation(String file, int msize, int col, String temp) {
+	public static File sortRelation(String file, int msize, int col, String temp, boolean efficient) {
 
 		int sublistindex = 0;
 		File filename1 = new File(file);
@@ -40,6 +40,11 @@ public class SMJSort {
 				writer.close();
 
 			}
+			/* If we are going to use the efficient SMJ algorithm there is
+			/* no need to continue on merging sublists
+			 */
+			if (efficient)
+				return null;
 			mergeSublists(nameprefix, temp, fileName1, 0, sublistindex, msize, col);
 			System.gc();
 			for (int i = 1; i < totalsublists; i++) {
@@ -48,8 +53,8 @@ public class SMJSort {
 				delfile.delete();
 
 			}
-			File oldfile =new File(temp + File.separator + nameprefix + totalsublists + ".csv");
-			File newfile =new File(temp + File.separatorChar +fileName1 + "_Sorted" + ".csv");
+			File oldfile = new File(temp + File.separator + nameprefix + totalsublists + ".csv");
+			File newfile = new File(temp + File.separatorChar + fileName1 + "_Sorted" + ".csv");
 			oldfile.renameTo(newfile);
 			return newfile;
 
@@ -84,8 +89,7 @@ public class SMJSort {
 		} else {
 			for (int round = 0; round < mergelistsnumber; round++) {
 
-				Comparator<Map.Entry<BufferedReader, String[]>> comparator = new HmapComparator();
-				HmapComparator.col = col;
+				Comparator<Map.Entry<BufferedReader, String[]>> comparator = new HmapComparator(col);
 				PriorityQueue<Map.Entry<BufferedReader, String[]>> queue = new PriorityQueue<Map.Entry<BufferedReader, String[]>>(
 						comparator);
 

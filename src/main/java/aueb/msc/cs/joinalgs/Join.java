@@ -15,6 +15,7 @@ import org.apache.commons.io.input.ReversedLinesFileReader;
 import aueb.msc.cs.utils.ArrayListCompare;
 import aueb.msc.cs.utils.CSVWriter;
 import aueb.msc.cs.utils.Checkargs;
+import aueb.msc.cs.utils.EfficientSMJMerge;
 import aueb.msc.cs.utils.JoinHeader;
 import aueb.msc.cs.utils.ReadCSV;
 import aueb.msc.cs.utils.RelationsJoin;
@@ -359,9 +360,6 @@ public class Join {
 
 	public void multipassSMJ() throws IOException {
 
-		File file1 = SMJSort.sortRelation(this.file1, this.msize, this.col1, this.temp);
-		File file2 = SMJSort.sortRelation(this.file2, this.msize, this.col2, this.temp);
-
 		FileWriter writer = new FileWriter(output);
 		// Write header row
 		BufferedReader br1 = new BufferedReader(new FileReader(this.file1));
@@ -374,9 +372,29 @@ public class Join {
 		br2.close();
 		writer.flush();
 
-		SMJMerge.merge(file1, file2, this.col1, this.col2, this.file2size, writer, this.output);
-		file1.delete();
-		file2.delete();
+		/*
+		 * If the produced m-size sorted sublists are less or equal to msize-1
+		 * we can save 2*(B(R1)+B(R2)) IO's by using the EfficientSMGMerge
+		 * algorithm , which joins the relations directly from sorted sublists
+		 * without merge the sublists into one sorted sublist for each relation.
+		 * We are going to use again a priority queue of Hashmaps with
+		 * buffereaders as keys and br.readline() as value. We are going to use
+		 * one such priority queue for each relation.
+		 */
+		if ((Math.floor((this.file1size + this.file2size) / this.msize) + 1) <= (this.msize - 1)) {
+			//System.out.println("SMJ efficient");
+			EfficientSMJMerge.merge(this.file1, this.file2, this.msize, this.col1, this.col2, this.file1size,
+					this.file2size, this.temp, writer);
+			
+		} else {
+			//System.out.println("SMJ not efficient");
+			File file1 = SMJSort.sortRelation(this.file1, this.msize, this.col1, this.temp, false);
+			File file2 = SMJSort.sortRelation(this.file2, this.msize, this.col2, this.temp, false);
+			SMJMerge.merge(file1, file2, this.col1, this.col2, this.file2size, writer, this.output);
+			file1.delete();
+			file2.delete();
 
+		}
+		writer.close();
 	}
 }
