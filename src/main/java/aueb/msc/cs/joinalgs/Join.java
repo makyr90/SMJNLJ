@@ -149,8 +149,8 @@ public class Join {
 
 	public void singlePassNLJ() throws IOException {
 
-		ArrayList<String[]> r1 = ReadCSV.readFile(this.file1);
-		ArrayList<String[]> r2 = ReadCSV.readFile(this.file2);
+		ArrayList<String[]> r1 = ReadCSV.readFile(this.file1,",");
+		ArrayList<String[]> r2 = ReadCSV.readFile(this.file2,",");
 		FileWriter writer = new FileWriter(this.output);
 		CSVWriter.writeLine(writer, JoinHeader.makeHeaderRow(this.file1, this.file2, r1.get(0).length, r2.get(0).length,
 				this.col1, this.col2));
@@ -163,8 +163,8 @@ public class Join {
 
 	public void singlePassSMJ() throws IOException {
 
-		ArrayList<String[]> r1 = ReadCSV.readFile(this.file1);
-		ArrayList<String[]> r2 = ReadCSV.readFile(this.file2);
+		ArrayList<String[]> r1 = ReadCSV.readFile(this.file1,",");
+		ArrayList<String[]> r2 = ReadCSV.readFile(this.file2,",");
 		ArrayListCompare.sort(r1, this.col1);
 		ArrayListCompare.sort(r2, this.col2);
 		int iindex = 0, jindex = 0;

@@ -9,10 +9,10 @@ import org.apache.commons.io.input.ReversedLinesFileReader;
 
 public class ReadCSV {
 
-	public static ArrayList<String[]> readFile(String file) {
+	public static ArrayList<String[]> readFile(String file,String delimeter) {
 
 		String line = "";
-		String cvsSplitBy = ",";
+		String cvsSplitBy = delimeter;
 		ArrayList<String[]> relation = new ArrayList<>();
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			br.readLine(); // Skip 1st line

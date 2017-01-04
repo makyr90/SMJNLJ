@@ -37,7 +37,7 @@ public class Main {
 				e.printStackTrace();
 			}
 		// Test output and measure execution time in milliseconds
-		ArrayList<String[]> results = ReadCSV.readFile(join.getOutput());
+		ArrayList<String[]> results = ReadCSV.readFile(join.getOutput(),",");
 		System.out.println("Joins: " + results.size());
 		elapsedTime = (endTime-startTime)/1000000;
 		System.out.println("Execution time: "+elapsedTime+" ms");
