@@ -12,19 +12,19 @@ import org.junit.rules.TemporaryFolder;
 
 import aueb.msc.cs.utils.ReadCSV;
  
-public class MainABTest {
+public class MainBCTest {
     
 	 @Rule
      public TemporaryFolder folder= new TemporaryFolder();
 
      @Test
-     public void testMainA0B0nlj() throws IOException {
+     public void testMainB0C0nlj() throws IOException {
             
     	    File createdFile= folder.newFile("output.csv");
             ClassLoader classLoader = getClass().getClassLoader();
-            File file1 = new File(classLoader.getResource("A.csv").getFile());
-            File file2 = new File(classLoader.getResource("B.csv").getFile());
-            File dbmsResults = new File(classLoader.getResource("A0B0.csv").getFile());
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B0C0.csv").getFile());
              
 			Main.main(Utilities.parseArguments(file1, file2, createdFile, "nlj", "0", "0"));
             ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
@@ -36,13 +36,13 @@ public class MainABTest {
      }
      
      @Test
-     public void testMainA0B0smj() throws IOException {
+     public void testMainB0C0smj() throws IOException {
             
     	    File createdFile= folder.newFile("output.csv");
             ClassLoader classLoader = getClass().getClassLoader();
-            File file1 = new File(classLoader.getResource("A.csv").getFile());
-            File file2 = new File(classLoader.getResource("B.csv").getFile());
-            File dbmsResults = new File(classLoader.getResource("A0B0.csv").getFile());
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B0C0.csv").getFile());
              
 			Main.main(Utilities.parseArguments(file1, file2, createdFile, "smj", "0", "0"));
             ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
@@ -52,14 +52,15 @@ public class MainABTest {
             assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
             
      }
+     
      @Test
-     public void testMainA0B1nlj() throws IOException {
+     public void testMainB0C1nlj() throws IOException {
             
     	    File createdFile= folder.newFile("output.csv");
             ClassLoader classLoader = getClass().getClassLoader();
-            File file1 = new File(classLoader.getResource("A.csv").getFile());
-            File file2 = new File(classLoader.getResource("B.csv").getFile());
-            File dbmsResults = new File(classLoader.getResource("A0B1.csv").getFile());
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B0C1.csv").getFile());
              
 			Main.main(Utilities.parseArguments(file1, file2, createdFile, "nlj", "0", "1"));
             ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
@@ -71,13 +72,13 @@ public class MainABTest {
      }
      
      @Test
-     public void testMainA0B1smj() throws IOException {
+     public void testMainB0C1smj() throws IOException {
             
     	    File createdFile= folder.newFile("output.csv");
             ClassLoader classLoader = getClass().getClassLoader();
-            File file1 = new File(classLoader.getResource("A.csv").getFile());
-            File file2 = new File(classLoader.getResource("B.csv").getFile());
-            File dbmsResults = new File(classLoader.getResource("A0B1.csv").getFile());
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B0C1.csv").getFile());
              
 			Main.main(Utilities.parseArguments(file1, file2, createdFile, "smj", "0", "1"));
             ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
@@ -87,14 +88,15 @@ public class MainABTest {
             assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
             
      }
+     
      @Test
-     public void testMainA0B2nlj() throws IOException {
+     public void testMainB0C2nlj() throws IOException {
             
     	    File createdFile= folder.newFile("output.csv");
             ClassLoader classLoader = getClass().getClassLoader();
-            File file1 = new File(classLoader.getResource("A.csv").getFile());
-            File file2 = new File(classLoader.getResource("B.csv").getFile());
-            File dbmsResults = new File(classLoader.getResource("A0B2.csv").getFile());
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B0C2.csv").getFile());
              
 			Main.main(Utilities.parseArguments(file1, file2, createdFile, "nlj", "0", "2"));
             ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
@@ -106,13 +108,13 @@ public class MainABTest {
      }
      
      @Test
-     public void testMainA0B2smj() throws IOException {
+     public void testMainB0C2smj() throws IOException {
             
     	    File createdFile= folder.newFile("output.csv");
             ClassLoader classLoader = getClass().getClassLoader();
-            File file1 = new File(classLoader.getResource("A.csv").getFile());
-            File file2 = new File(classLoader.getResource("B.csv").getFile());
-            File dbmsResults = new File(classLoader.getResource("A0B2.csv").getFile());
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B0C2.csv").getFile());
              
 			Main.main(Utilities.parseArguments(file1, file2, createdFile, "smj", "0", "2"));
             ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
@@ -124,13 +126,13 @@ public class MainABTest {
      }
      
      @Test
-     public void testMainA0B3nlj() throws IOException {
+     public void testMainB0C3nlj() throws IOException {
             
     	    File createdFile= folder.newFile("output.csv");
             ClassLoader classLoader = getClass().getClassLoader();
-            File file1 = new File(classLoader.getResource("A.csv").getFile());
-            File file2 = new File(classLoader.getResource("B.csv").getFile());
-            File dbmsResults = new File(classLoader.getResource("A0B3.csv").getFile());
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B0C3.csv").getFile());
              
 			Main.main(Utilities.parseArguments(file1, file2, createdFile, "nlj", "0", "3"));
             ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
@@ -142,13 +144,13 @@ public class MainABTest {
      }
      
      @Test
-     public void testMainA0B3smj() throws IOException {
+     public void testMainB0C3smj() throws IOException {
             
     	    File createdFile= folder.newFile("output.csv");
             ClassLoader classLoader = getClass().getClassLoader();
-            File file1 = new File(classLoader.getResource("A.csv").getFile());
-            File file2 = new File(classLoader.getResource("B.csv").getFile());
-            File dbmsResults = new File(classLoader.getResource("A0B3.csv").getFile());
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B0C3.csv").getFile());
              
 			Main.main(Utilities.parseArguments(file1, file2, createdFile, "smj", "0", "3"));
             ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
@@ -158,4 +160,5 @@ public class MainABTest {
             assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
             
      }
+    
 }
