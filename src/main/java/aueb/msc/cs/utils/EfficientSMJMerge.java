@@ -41,14 +41,13 @@ public class EfficientSMJMerge {
 		// initialize queuefile2
 		initializeQueue(file2prefix, file2sublists, 2, temp);
 
-
 		HmapEntry tuple1 = (HmapEntry) queuefile1.remove();
 		HmapEntry tuple2 = (HmapEntry) queuefile2.remove();
 
 		while ((tuple1 != null) && (tuple2 != null)) {
-			
+
 			if ((Integer.parseInt(tuple1.getValue()[col1])) == (Integer.parseInt(tuple2.getValue()[col2]))) {
-				HmapEntry[] indexes= outputTuples(writer, tuple1, tuple2, col1, col2);
+				HmapEntry[] indexes = outputTuples(writer, tuple1, tuple2, col1, col2);
 				tuple1 = indexes[0];
 				tuple2 = indexes[1];
 
@@ -69,16 +68,15 @@ public class EfficientSMJMerge {
 		cleanDirectory(temp, file2prefix, file2sublists);
 
 	}
-	
+
 	public static HmapEntry[] outputTuples(Writer writer, HmapEntry tuple1, HmapEntry tuple2, int col1, int col2)
 			throws IOException {
-		
+
 		ArrayList<String[]> joinedtuples = new ArrayList<>();
 		String[] tuple2clone = tuple2.getValue();
 		boolean firstpass = true;
-		
-		while ((Integer.parseInt(tuple1.getValue()[col1])) == (Integer.parseInt(tuple2clone[col2]))
-				& (tuple1 != null)) {
+
+		while ((Integer.parseInt(tuple1.getValue()[col1])) == (Integer.parseInt(tuple2clone[col2]))){
 			if (firstpass) {
 				firstpass = false;
 			} else {
@@ -89,8 +87,7 @@ public class EfficientSMJMerge {
 
 				continue;
 			}
-			while ((Integer.parseInt(tuple1.getValue()[col1])) == (Integer.parseInt(tuple2.getValue()[col2]))
-					& (tuple2 != null)) {
+			while ((Integer.parseInt(tuple1.getValue()[col1])) == (Integer.parseInt(tuple2.getValue()[col2]))) {
 				RelationsJoin.writejoin(tuple1.getValue(), tuple2.getValue(), col1, col2, writer);
 				joinedtuples.add(tuple2.getValue());
 				tuple2 = updateQueueFile2(tuple2);
@@ -98,11 +95,13 @@ public class EfficientSMJMerge {
 					break;
 			}
 			tuple1 = updateQueueFile1(tuple1);
+			if (tuple1 == null)
+				break;
 
 		}
-		
-		return new HmapEntry[] {tuple1,tuple2};
-		
+
+		return new HmapEntry[] { tuple1, tuple2 };
+
 	}
 
 	public static int sublistsnumber(int filesize, int msize) {

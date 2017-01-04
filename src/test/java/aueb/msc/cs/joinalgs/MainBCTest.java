@@ -160,5 +160,150 @@ public class MainBCTest {
             assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
             
      }
+     
+     //
+     @Test
+     public void testMainB1C0nlj() throws IOException {
+            
+    	    File createdFile= folder.newFile("output.csv");
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B1C0.csv").getFile());
+             
+			Main.main(Utilities.parseArguments(file1, file2, createdFile, "nlj", "1", "0"));
+            ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
+            ArrayList<String[]> DBMSResults = ReadCSV.readFile(dbmsResults.getAbsolutePath(), ";");
+            
+            assertTrue("DBMS and program results have different length",programResults.size()==DBMSResults.size());
+            assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
+            
+     }
+     
+     @Test
+     public void testMainB1C0smj() throws IOException {
+            
+    	    File createdFile= folder.newFile("output.csv");
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B1C0.csv").getFile());
+             
+			Main.main(Utilities.parseArguments(file1, file2, createdFile, "smj", "1", "0"));
+            ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
+            ArrayList<String[]> DBMSResults = ReadCSV.readFile(dbmsResults.getAbsolutePath(), ";");
+            
+            assertTrue("DBMS and program results have different length",programResults.size()==DBMSResults.size());
+            assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
+            
+     }
+     
+     @Test
+     public void testMainB1C1nlj() throws IOException {
+            
+    	    File createdFile= folder.newFile("output.csv");
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B1C1.csv").getFile());
+             
+			Main.main(Utilities.parseArguments(file1, file2, createdFile, "nlj", "1", "1"));
+            ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
+            ArrayList<String[]> DBMSResults = ReadCSV.readFile(dbmsResults.getAbsolutePath(), ";");
+            
+            assertTrue("DBMS and program results have different length",programResults.size()==DBMSResults.size());
+            assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
+            
+     }
+     
+     @Test
+     public void testMainB1C1smj() throws IOException {
+            
+    	    File createdFile= folder.newFile("output.csv");
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B1C1.csv").getFile());
+             
+			Main.main(Utilities.parseArguments(file1, file2, createdFile, "smj", "1", "1"));
+            ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
+            ArrayList<String[]> DBMSResults = ReadCSV.readFile(dbmsResults.getAbsolutePath(), ";");
+            
+            assertTrue("DBMS and program results have different length",programResults.size()==DBMSResults.size());
+            assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
+            
+     }
+     
+     @Test
+     public void testMainB1C2nlj() throws IOException {
+            
+    	    File createdFile= folder.newFile("output.csv");
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B1C2.csv").getFile());
+             
+			Main.main(Utilities.parseArguments(file1, file2, createdFile, "nlj", "1", "2"));
+            ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
+            ArrayList<String[]> DBMSResults = ReadCSV.readFile(dbmsResults.getAbsolutePath(), ";");
+            
+            assertTrue("DBMS and program results have different length",programResults.size()==DBMSResults.size());
+            assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
+            
+     }
+     
+     @Test
+     public void testMainB1C2smj() throws IOException {
+            
+    	    File createdFile= folder.newFile("output.csv");
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B1C2.csv").getFile());
+             
+			Main.main(Utilities.parseArguments(file1, file2, createdFile, "smj", "1", "2"));
+            ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
+            ArrayList<String[]> DBMSResults = ReadCSV.readFile(dbmsResults.getAbsolutePath(), ";");
+            
+            assertTrue("DBMS and program results have different length",programResults.size()==DBMSResults.size());
+            assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
+            
+     }
+     
+     @Test
+     public void testMainB1C3nlj() throws IOException {
+            
+    	    File createdFile= folder.newFile("output.csv");
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B1C3.csv").getFile());
+             
+			Main.main(Utilities.parseArguments(file1, file2, createdFile, "nlj", "1", "3"));
+            ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
+            ArrayList<String[]> DBMSResults = ReadCSV.readFile(dbmsResults.getAbsolutePath(), ";");
+            
+            assertTrue("DBMS and program results have different length",programResults.size()==DBMSResults.size());
+            assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
+            
+     }
+     
+     @Test
+     public void testMainB1C3smj() throws IOException {
+            
+    	    File createdFile= folder.newFile("output.csv");
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file1 = new File(classLoader.getResource("B.csv").getFile());
+            File file2 = new File(classLoader.getResource("C.csv").getFile());
+            File dbmsResults = new File(classLoader.getResource("B1C3.csv").getFile());
+             
+			Main.main(Utilities.parseArguments(file1, file2, createdFile, "smj", "1", "3"));
+            ArrayList<String[]> programResults = ReadCSV.readFile(createdFile.getAbsolutePath(), ",");
+            ArrayList<String[]> DBMSResults = ReadCSV.readFile(dbmsResults.getAbsolutePath(), ";");
+            
+            assertTrue("DBMS and program results have different length",programResults.size()==DBMSResults.size());
+            assertTrue("DBMS and program results are different",Utilities.equalResults(programResults, DBMSResults));
+            
+     }
     
 }

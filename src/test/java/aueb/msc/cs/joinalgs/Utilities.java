@@ -16,9 +16,7 @@ public class Utilities {
 					break;
 				}
 			}
-			if (equal)
-				continue;
-			else
+			if (!equal)
 				return false;
 
 		}
