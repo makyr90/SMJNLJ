@@ -18,7 +18,6 @@ public class Utilities {
 			}
 			if (!equal)
 				return false;
-
 		}
 		return true;
 

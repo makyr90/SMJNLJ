@@ -32,7 +32,7 @@ public class RelationsJoin {
 							rel1[i] = tupler1[i];
 
 					}
-					rel2 = ArrayUtils.removeElement(rel2, rel2[col2]);
+					rel2 = ArrayUtils.remove(rel2, col2);
 
 					List<String> joinattr = Arrays.asList(ArrayUtils.addAll(rel1, rel2));
 					results.add(joinattr);
@@ -66,7 +66,7 @@ public class RelationsJoin {
 						rel1[i] = tupler1[i];
 
 				}
-				rel2 = ArrayUtils.removeElement(rel2, rel2[col2]);
+				rel2 = ArrayUtils.remove(rel2, col2);
 
 				List<String> joinattr = Arrays.asList(ArrayUtils.addAll(rel1, rel2));
 				results.add(joinattr);
@@ -96,7 +96,7 @@ public class RelationsJoin {
 				rel1[i] = tupler1[i];
 
 		}
-		rel2 = ArrayUtils.removeElement(rel2, rel2[col2]);
+		rel2 = ArrayUtils.remove(rel2, col2);
 
 		List<String> joinattr = Arrays.asList(ArrayUtils.addAll(rel1, rel2));
 		CSVWriter.writeLine(writer, joinattr);
