@@ -1,5 +1,5 @@
 # SMJNLJ
-### Implement two join algorithms, SMJ (Sort Merge Join) and NLJ (Nested Loop Join) in java
+### Implement two join algorithms, SMJ (Sort Merge Join) and NLJ (Nested Loops Join) in java
 Program accepts the following command line arguments:
 
 * **-f1** <file1 path>: full path to file1
