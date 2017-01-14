@@ -400,12 +400,12 @@ public class Join {
 		 * one such priority queue for each relation.
 		 */
 		if ((Math.floor((this.file1size + this.file2size) / this.msize) + 1) <= (this.msize - 1)) {
-			System.out.println("Singlepass SMJ");
+			//System.out.println("Singlepass SMJ");
 			EfficientSMJMerge.merge(this.file1, this.file2, this.msize, this.col1, this.col2, this.file1size,
 					this.file2size, this.temp, writer,this.selfjoinSamecol());
 
 		} else {
-			 System.out.println("Multipass SMJ");
+			//System.out.println("Multipass SMJ");
 			File file1 = SMJSort.sortRelation(this.file1, this.msize, this.col1, this.temp, false);
 			File file2 = null;
 			
