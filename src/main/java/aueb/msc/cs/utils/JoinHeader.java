@@ -1,6 +1,5 @@
 package aueb.msc.cs.utils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,13 +7,10 @@ public class JoinHeader {
 
 	public static List<String> makeHeaderRow(String file1, String file2, int file1cols, int file2cols, int col1,int col2) {
 
-		File filename1 = new File(file1);
-		String fileName1 = filename1.getName();
-		fileName1 = fileName1.substring(0, fileName1.lastIndexOf(".") + 0);
-
-		File filename2 = new File(file2);
-		String fileName2 = filename2.getName();
-		fileName2 = fileName2.substring(0, fileName2.lastIndexOf(".") + 0);
+		
+		String fileName1 = Utils.prefix(file1);
+		String fileName2 = Utils.prefix(file2);
+		
 		List<String> hrow = new ArrayList<>();
 
 		hrow.add(fileName1 + col1 + " = " + fileName2 + col2 + " (join column)");

@@ -22,8 +22,6 @@ public class Checkargs {
 			System.exit(0);
 		}
 	}
-	
-	
 
 	public static void checkjoinalgorithm(String joinmeth) {
 		if (!(joinmeth.equals("NLJ") || joinmeth.equals("SMJ"))) {
@@ -33,10 +31,12 @@ public class Checkargs {
 	}
 
 	public static void checkmemorysize(int m) {
+
 		if (m <= 1) {
 			System.out.println("Memory size -m should be greater than one");
 			System.exit(0);
 		}
+
 	}
 
 	public static int checkcolumn(String file, int column) {
@@ -49,7 +49,7 @@ public class Checkargs {
 			totalrecords = Integer.parseInt(values[0]);
 			line = br.readLine();
 			String[] values2 = line.split(cvsSplitBy);
-			if (((values2.length -1) < column) || (column < 0)) {
+			if (((values2.length - 1) < column) || (column < 0)) {
 				System.out.println("The selected column number for file " + file + " is out of the correct range [0,"
 						+ (values2.length - 1) + "]");
 				System.exit(0);
@@ -59,7 +59,7 @@ public class Checkargs {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NullPointerException ne) {
-			System.out.println("The selected file: "+file+" has no records");
+			System.out.println("The selected file: " + file + " has no records");
 			System.exit(0);
 		}
 

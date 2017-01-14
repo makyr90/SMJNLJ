@@ -19,10 +19,8 @@ public class SMJSort {
 	public static File sortRelation(String file, int msize, int col, String temp, boolean efficient) {
 
 		int sublistindex = 0;
-		File filename1 = new File(file);
-		String fileName1 = filename1.getName();
-		fileName1 = fileName1.substring(0, fileName1.lastIndexOf(".") + 0);
-		String nameprefix = fileName1 + "_Sublist_";
+		String fileprefix = Utils.prefix(file);
+		String nameprefix = fileprefix + "_Sublist_";
 		ArrayList<String[]> relation = new ArrayList<>();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -45,7 +43,7 @@ public class SMJSort {
 			 */
 			if (efficient)
 				return null;
-			mergeSublists(nameprefix, temp, fileName1, 0, sublistindex, msize, col);
+			mergeSublists(nameprefix, temp, fileprefix, 0, sublistindex, msize, col);
 			System.gc();
 			for (int i = 1; i < totalsublists; i++) {
 				String filetodelete = temp + File.separator + nameprefix + i + ".csv";
@@ -54,7 +52,7 @@ public class SMJSort {
 
 			}
 			File oldfile = new File(temp + File.separator + nameprefix + totalsublists + ".csv");
-			File newfile = new File(temp + File.separatorChar + fileName1 + "_Sorted" + ".csv");
+			File newfile = new File(temp + File.separatorChar + fileprefix + "_Sorted" + ".csv");
 			oldfile.renameTo(newfile);
 			return newfile;
 

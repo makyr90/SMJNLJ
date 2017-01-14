@@ -117,10 +117,8 @@ public class EfficientSMJMerge {
 
 	public static String sublistsprefix(String file) {
 
-		File filename1 = new File(file);
-		String fileName1 = filename1.getName();
-		fileName1 = fileName1.substring(0, fileName1.lastIndexOf(".") + 0);
-		String nameprefix = fileName1 + "_Sublist_";
+		
+		String nameprefix = Utils.prefix(file) + "_Sublist_";
 		return nameprefix;
 	}
 

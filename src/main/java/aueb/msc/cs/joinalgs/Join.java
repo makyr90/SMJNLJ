@@ -21,6 +21,7 @@ import aueb.msc.cs.utils.ReadCSV;
 import aueb.msc.cs.utils.RelationsJoin;
 import aueb.msc.cs.utils.SMJMerge;
 import aueb.msc.cs.utils.SMJSort;
+import aueb.msc.cs.utils.Utils;
 import aueb.msc.cs.utils.WriteTuples;
 
 public class Join {
@@ -44,7 +45,12 @@ public class Join {
 				Checkargs.checkjoinalgorithm(this.joinmethod);
 
 			} else if (arguments[i].equalsIgnoreCase("-m")) {
-				this.msize = Integer.parseInt(arguments[i + 1]);
+				try {
+					this.msize = Integer.parseInt(arguments[i + 1]);
+				} catch (NumberFormatException exception) {
+					System.out.println("Memory size -m should Integer");
+					System.exit(0);
+				}
 				Checkargs.checkmemorysize(this.msize);
 
 			}
@@ -147,10 +153,30 @@ public class Join {
 
 	}
 
+	public boolean selfjoin() {
+
+		if (this.file1.equals(this.file2))
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean selfjoinSamecol() {
+
+		if (this.file1.equals(this.file2)& (this.col1==this.col2))
+			return true;
+		else
+			return false;
+	}
+
 	public void singlePassNLJ() throws IOException {
 
-		ArrayList<String[]> r1 = ReadCSV.readFile(this.file1,",");
-		ArrayList<String[]> r2 = ReadCSV.readFile(this.file2,",");
+		ArrayList<String[]> r1 = ReadCSV.readFile(this.file1, ",");
+		ArrayList<String[]> r2;
+		if (this.selfjoin())
+			r2 = Utils.cloneList(r1);
+		else
+			r2 = ReadCSV.readFile(this.file2, ",");
 		FileWriter writer = new FileWriter(this.output);
 		CSVWriter.writeLine(writer, JoinHeader.makeHeaderRow(this.file1, this.file2, r1.get(0).length, r2.get(0).length,
 				this.col1, this.col2));
@@ -163,10 +189,16 @@ public class Join {
 
 	public void singlePassSMJ() throws IOException {
 
-		ArrayList<String[]> r1 = ReadCSV.readFile(this.file1,",");
-		ArrayList<String[]> r2 = ReadCSV.readFile(this.file2,",");
-		ArrayListCompare.sort(r1, this.col1);
-		ArrayListCompare.sort(r2, this.col2);
+		ArrayList<String[]> r1 = ReadCSV.readFile(this.file1, ",");
+		ArrayList<String[]> r2;
+		if (this.selfjoinSamecol()) {
+			ArrayListCompare.sort(r1, this.col1);
+			r2 = Utils.cloneList(r1);
+		} else {
+			r2 = ReadCSV.readFile(this.file2, ",");
+			ArrayListCompare.sort(r1, this.col1);
+			ArrayListCompare.sort(r2, this.col2);
+		}
 		int iindex = 0, jindex = 0;
 		int[] indexes;
 		FileWriter writer = new FileWriter(this.output);
@@ -205,9 +237,9 @@ public class Join {
 			this.file1size = this.file2size;
 			this.file2size = swapfilesize;
 		}
-
+		
+	
 		BufferedReader file1br = new BufferedReader(new FileReader(this.file1));
-
 		// Skip 1st line
 		file1br.readLine();
 		ArrayList<String[]> r1 = new ArrayList<>();
@@ -236,7 +268,7 @@ public class Join {
 		}
 
 		writer.close();
-		file1br.close();
+	
 
 	}
 
@@ -245,23 +277,8 @@ public class Join {
 
 		ArrayList<String[]> r2 = new ArrayList<>();
 		// Smaller relation can fit in memory
-		if ((br == null) & ((r1.size()) < (this.msize - 1))) {
-			int availiablebuffers = (this.msize - r1.size());
-			try (BufferedReader br2 = new BufferedReader(new FileReader(this.file2))) {
-				// Skip 1st line
-				br2.readLine();
-				int rounds = (int) Math.ceil(((this.file2size) / availiablebuffers));
-				for (int i = 0; i < rounds; i++) {
-					r2 = ReadCSV.readFileChunk(br2, availiablebuffers);
-					RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer, this.nljswap);
-					writer.flush();
-				}
-				br2.close();
-			}
-			return null;
-
-			// Smaller relation fits exactly in memory
-		} else if ((br == null) & (r1.size() == (this.msize - 1))) {
+		
+		if ((br == null) & (this.file2size <=(this.msize - 1))) {
 			try (BufferedReader br2 = new BufferedReader(new FileReader(this.file2))) {
 				// Skip 1st line
 				br2.readLine();
@@ -274,6 +291,7 @@ public class Join {
 			}
 			return null;
 
+			
 		} else if (br == null) {
 			try (BufferedReader br2 = new BufferedReader(new FileReader(this.file2))) {
 				// Skip 1st line
@@ -316,7 +334,7 @@ public class Join {
 		} else if ((br != null) & ((r1.size()) == (this.msize - 1)) & (!reverse)) {
 			RelationsJoin.writejoin(r1, this.NLJrockingCache, this.col1, this.col2, writer, this.nljswap);
 			this.NLJrockingCache.clear();
-			for (int i = 0; i < (this.file2size - 1); i++) {
+			for (int i = 0; i < (this.file2size - 2); i++) {
 				r2 = ReadCSV.readFileChunk((BufferedReader) br, 1);
 				RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer, this.nljswap);
 				writer.flush();
@@ -333,24 +351,24 @@ public class Join {
 		} else {
 			RelationsJoin.writejoin(r1, this.NLJrockingCache, this.col1, this.col2, writer, this.nljswap);
 			this.NLJrockingCache.clear();
-			int availiablebuffers = (this.msize - r1.size());
 			if (br instanceof BufferedReader) {
-				int rounds = (int) Math.ceil(((this.file2size - 1) / availiablebuffers));
-				for (int i = 0; i < rounds; i++) {
-					r2 = ReadCSV.readFileChunk((BufferedReader) br, availiablebuffers);
+				
+				for (int i = 0; i < (this.file2size -1); i++) {
+					r2 = ReadCSV.readFileChunk((BufferedReader) br, 1);
 					RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer, this.nljswap);
 					writer.flush();
 				}
 				((BufferedReader) br).close();
+				
 
 			} else {
-				int rounds = (int) Math.ceil(((this.file2size - 2) / availiablebuffers));
-				for (int i = 0; i < rounds; i++) {
-					r2 = ReadCSV.readFileChunkReverse((ReversedLinesFileReader) br, availiablebuffers);
+				for (int i = 0; i < (this.file2size -1); i++) {
+					r2 = ReadCSV.readFileChunkReverse((ReversedLinesFileReader) br, 1);
 					RelationsJoin.writejoin(r1, r2, this.col1, this.col2, writer, this.nljswap);
 					writer.flush();
 
 				}
+				
 				((ReversedLinesFileReader) br).close();
 			}
 			return null;
@@ -382,12 +400,12 @@ public class Join {
 		 * one such priority queue for each relation.
 		 */
 		if ((Math.floor((this.file1size + this.file2size) / this.msize) + 1) <= (this.msize - 1)) {
-			//System.out.println("SMJ efficient");
+			// System.out.println("SMJ efficient");
 			EfficientSMJMerge.merge(this.file1, this.file2, this.msize, this.col1, this.col2, this.file1size,
 					this.file2size, this.temp, writer);
-			
+
 		} else {
-			//System.out.println("SMJ not efficient");
+			// System.out.println("SMJ not efficient");
 			File file1 = SMJSort.sortRelation(this.file1, this.msize, this.col1, this.temp, false);
 			File file2 = SMJSort.sortRelation(this.file2, this.msize, this.col2, this.temp, false);
 			SMJMerge.merge(file1, file2, this.col1, this.col2, this.file2size, writer, this.output);
