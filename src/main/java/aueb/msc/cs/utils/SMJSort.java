@@ -73,7 +73,7 @@ public class SMJSort {
 		int initialsublistnumber = sublistsnumber;
 		int mergelistsnumber;
 
-		if (((sublistsnumber - startindex) % (msize - 1)) == 0)
+		if ((sublistsnumber - startindex) == (msize - 1))
 			mergelistsnumber = 1;
 		else
 			mergelistsnumber = (int) (Math.floor((sublistsnumber - startindex) / (msize - 1))) + 1;

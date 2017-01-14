@@ -32,7 +32,7 @@ public class Checkargs {
 
 	public static void checkmemorysize(int m) {
 
-		if (m <= 1) {
+		if (m <= 2) {
 			System.out.println("Memory size -m should be greater than one");
 			System.exit(0);
 		}
