@@ -20,7 +20,7 @@ public class SMJSort {
 
 		int sublistindex = 0;
 		String fileprefix = Utils.prefix(file);
-		String nameprefix = fileprefix + "_Sublist_";
+		String nameprefix = fileprefix + "_Sublist_col_"+col+"_";
 		ArrayList<String[]> relation = new ArrayList<>();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -52,7 +52,7 @@ public class SMJSort {
 
 			}
 			File oldfile = new File(temp + File.separator + nameprefix + totalsublists + ".csv");
-			File newfile = new File(temp + File.separatorChar + fileprefix + "_Sorted" + ".csv");
+			File newfile = new File(temp + File.separatorChar + fileprefix + "_Sorted_" +col+ ".csv");
 			oldfile.renameTo(newfile);
 			return newfile;
 

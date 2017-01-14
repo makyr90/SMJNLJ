@@ -20,14 +20,18 @@ public class EfficientSMJMerge {
 	public static String cvsSplitBy = ",";
 
 	public static void merge(String file1, String file2, int msize, int col1, int col2, int file1size, int file2size,
-			String temp, Writer writer) throws IOException {
+			String temp, Writer writer,boolean selfjoinSamecol) throws IOException {
 
-		SMJSort.sortRelation(file1, msize, col1, temp, true);
-		SMJSort.sortRelation(file2, msize, col2, temp, true);
+		if(selfjoinSamecol)
+			SMJSort.sortRelation(file1, msize, col1, temp, true);
+		else{
+			SMJSort.sortRelation(file1, msize, col1, temp, true);
+			SMJSort.sortRelation(file2, msize, col2, temp, true);
+		}
 		int file1sublists = sublistsnumber(file1size, msize);
 		int file2sublists = sublistsnumber(file2size, msize);
-		String file1prefix = sublistsprefix(file1);
-		String file2prefix = sublistsprefix(file2);
+		String file1prefix = sublistsprefix(file1,col1);
+		String file2prefix = sublistsprefix(file2,col2);
 
 		comparatorfile1 = new HmapComparator(col1);
 		queuefile1 = new PriorityQueue<Map.Entry<BufferedReader, String[]>>(comparatorfile1);
@@ -115,10 +119,10 @@ public class EfficientSMJMerge {
 
 	}
 
-	public static String sublistsprefix(String file) {
+	public static String sublistsprefix(String file,int col) {
 
 		
-		String nameprefix = Utils.prefix(file) + "_Sublist_";
+		String nameprefix = Utils.prefix(file) + "_Sublist_col_"+col+"_";
 		return nameprefix;
 	}
 

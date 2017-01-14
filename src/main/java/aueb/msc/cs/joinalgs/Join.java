@@ -395,23 +395,35 @@ public class Join {
 		 * we can save 2*(B(R1)+B(R2)) IO's by using the EfficientSMGMerge
 		 * algorithm , which joins the relations directly from sorted sublists
 		 * without merge the sublists into one sorted sublist for each relation.
-		 * We are going to use again a priority queue of Hashmaps with
-		 * buffereaders as keys and br.readline() as value. We are going to use
+		 * We are going to use again a priority queue of HashMaps with
+		 * buffeReaders as keys and br.readline() as value. We are going to use
 		 * one such priority queue for each relation.
 		 */
 		if ((Math.floor((this.file1size + this.file2size) / this.msize) + 1) <= (this.msize - 1)) {
-			// System.out.println("SMJ efficient");
+			System.out.println("Singlepass SMJ");
 			EfficientSMJMerge.merge(this.file1, this.file2, this.msize, this.col1, this.col2, this.file1size,
-					this.file2size, this.temp, writer);
+					this.file2size, this.temp, writer,this.selfjoinSamecol());
 
 		} else {
-			// System.out.println("SMJ not efficient");
+			 System.out.println("Multipass SMJ");
 			File file1 = SMJSort.sortRelation(this.file1, this.msize, this.col1, this.temp, false);
-			File file2 = SMJSort.sortRelation(this.file2, this.msize, this.col2, this.temp, false);
-			SMJMerge.merge(file1, file2, this.col1, this.col2, this.file2size, writer, this.output);
-			file1.delete();
-			file2.delete();
-
+			File file2 = null;
+			
+			/* In case of selfjoin on the same column reduce IO's
+			 * by reading and sorting the relation once
+			 * 
+			 */
+			if (this.selfjoinSamecol()){
+				SMJMerge.merge(file1, file1, this.col1, this.col2, this.file2size, writer, this.output);
+				file1.delete();
+				
+			}else{
+				file2 = SMJSort.sortRelation(this.file2, this.msize, this.col2, this.temp, false);
+				SMJMerge.merge(file1, file2, this.col1, this.col2, this.file2size, writer, this.output);
+				file1.delete();
+				file2.delete();
+			}
+			
 		}
 		writer.close();
 	}
